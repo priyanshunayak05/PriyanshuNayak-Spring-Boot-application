@@ -8,12 +8,11 @@ A simple and efficient **Spring Boot CRUD application** for managing student rec
 
 ### 🔹 Application Output
 
-![App Screenshot](<img width="1876" height="953" alt="image" src="https://github.com/user-attachments/assets/5c49f107-0d4e-4eb9-b269-a090a67e1878" />
-)
+<img width="1876" height="953" alt="image" src="https://github.com/user-attachments/assets/214d2426-952a-41b3-8454-a5c11bfd0fc0" />
 
 ### 🔹 API Testing (Postman / Browser)
+<img width="1856" height="709" alt="image" src="https://github.com/user-attachments/assets/c1065ee5-53dc-416d-a80a-f619138ceb65" />
 
-![API Screenshot](https://github.com/user-attachments/assets/your-image-link-2)
 
 ---
 
