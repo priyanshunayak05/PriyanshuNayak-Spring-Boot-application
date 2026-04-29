@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student CRUD Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 18px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #a78bfa;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+
+        .main-wrapper {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .form-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(167, 139, 250, 0.2);
+            border-radius: 12px;
+            padding: 24px 28px;
+            margin-bottom: 28px;
+        }
+
+        .form-card h2 {
+            font-size: 1.1rem;
+            color: #c4b5fd;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .form-row input {
+            flex: 1;
+            min-width: 150px;
+            padding: 11px 14px;
+            border: 1px solid rgba(167, 139, 250, 0.25);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            color: #e0e0e0;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-row input::placeholder {
+            color: #6b7280;
+        }
+
+        .form-row input:focus {
+            border-color: #a78bfa;
+            box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.15);
+        }
+
+        .btn-add {
+            padding: 11px 28px;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.2s;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+        }
+
+        .table-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(167, 139, 250, 0.15);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .table-card h2 {
+            font-size: 1.1rem;
+            color: #c4b5fd;
+            padding: 18px 24px;
+            font-weight: 500;
+            border-bottom: 1px solid rgba(167, 139, 250, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            padding: 13px 16px;
+            text-align: left;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #a78bfa;
+            background: rgba(124, 58, 237, 0.1);
+            border-bottom: 1px solid rgba(167, 139, 250, 0.15);
+        }
+
+        tbody td {
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        tbody tr:hover {
+            background: rgba(167, 139, 250, 0.06);
+        }
+
+        .btn-edit, .btn-remove {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 6px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: #1f1f1f;
+        }
+
+        .btn-remove {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            color: #fff;
+        }
+
+        .btn-edit:hover, .btn-remove:hover {
+            opacity: 0.85;
+        }
+
+        .empty-msg {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .search-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(167, 139, 250, 0.2);
+            border-radius: 12px;
+            padding: 24px 28px;
+            margin-bottom: 28px;
+        }
+
+        .search-card h2 {
+            font-size: 1.1rem;
+            color: #c4b5fd;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .btn-search {
+            padding: 11px 28px;
+            background: linear-gradient(135deg, #06b6d4, #22d3ee);
+            color: #0f172a;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.2s;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-search:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
+        }
+
+        .result-box {
+            margin-top: 16px;
+            padding: 16px 20px;
+            border-radius: 8px;
+            background: rgba(167, 139, 250, 0.08);
+            border: 1px solid rgba(167, 139, 250, 0.15);
+            display: none;
+        }
+
+        .result-box p {
+            margin: 4px 0;
+            font-size: 0.9rem;
+        }
+
+        .result-box .label {
+            color: #a78bfa;
+            font-weight: 600;
+        }
+
+        .result-box.error-box {
+            border-color: rgba(239, 68, 68, 0.3);
+            background: rgba(239, 68, 68, 0.08);
+            color: #f87171;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #fff;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 999;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.success { background: linear-gradient(135deg, #059669, #34d399); }
+        .toast.deleted { background: linear-gradient(135deg, #dc2626, #f87171); }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.75rem;
+            color: #4b5563;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Student CRUD Portal</h1>
+    <p>Spring Boot + JDBC | Priyanshu Nayak</p>
+</div>
+
+<div class="main-wrapper">
+
+    <div class="form-card">
+        <h2>Add New Student</h2>
+        <div class="form-row">
+            <input type="text" id="stuName" placeholder="Full Name">
+            <input type="email" id="stuEmail" placeholder="Email Address">
+            <input type="text" id="stuCourse" placeholder="Course Name">
+            <button class="btn-add" onclick="createStudent()">Add Student</button>
+        </div>
+    </div>
+
+    <div class="search-card">
+        <h2>Find Student by ID</h2>
+        <div class="form-row">
+            <input type="number" id="searchId" placeholder="Enter Student ID" min="1">
+            <button class="btn-search" onclick="findStudentById()">Search</button>
+        </div>
+        <div class="result-box" id="searchResult"></div>
+    </div>
+
+    <div class="table-card">
+        <h2>Student Records</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Course</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="recordsBody">
+                <tr><td colspan="5" class="empty-msg">Loading records...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <p class="footer-note">Web Development CA | Priyanshu Nayak</p>
+
+</div>
+
+<div class="toast" id="toastMsg"></div>
+
+<script>
+    var BASE_URL = "http://localhost:8081/students";
+
+    // Sample data used as fallback when backend is not running
+    var sampleStudents = [
+        { id: 1, name: "Priyanshu Nayak", email: "priyanshu.nayak@gmail.com", course: "Web Development" },
+        { id: 2, name: "Aarav Sharma", email: "aarav.sharma@outlook.com", course: "Data Structures" },
+        { id: 3, name: "Sneha Patel", email: "sneha.patel@yahoo.com", course: "Machine Learning" },
+        { id: 4, name: "Rohan Verma", email: "rohan.verma@gmail.com", course: "Cloud Computing" },
+        { id: 5, name: "Diya Gupta", email: "diya.gupta@hotmail.com", course: "Database Systems" },
+        { id: 6, name: "Kabir Singh", email: "kabir.singh@gmail.com", course: "Cyber Security" },
+        { id: 7, name: "Ananya Reddy", email: "ananya.r@outlook.com", course: "Artificial Intelligence" }
+    ];
+
+    var nextId = 8;
+    var useFallback = false;
+
+    // Show a brief toast notification
+    function showToast(message, type) {
+        var toast = document.getElementById("toastMsg");
+        toast.textContent = message;
+        toast.className = "toast " + type + " show";
+        setTimeout(function() { toast.className = "toast"; }, 2200);
+    }
+
+    // Render the student table from an array
+    function renderTable(students) {
+        var tbody = document.getElementById("recordsBody");
+        if (students.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="empty-msg">No student records found.</td></tr>';
+            return;
+        }
+        var html = "";
+        for (var i = 0; i < students.length; i++) {
+            var rec = students[i];
+            html += "<tr>";
+            html += "<td>" + rec.id + "</td>";
+            html += "<td>" + rec.name + "</td>";
+            html += "<td>" + rec.email + "</td>";
+            html += "<td>" + rec.course + "</td>";
+            html += '<td>';
+            html += '<button class="btn-edit" onclick="editStudent(' + rec.id + ')">Edit</button>';
+            html += '<button class="btn-remove" onclick="removeStudent(' + rec.id + ')">Remove</button>';
+            html += '</td>';
+            html += "</tr>";
+        }
+        tbody.innerHTML = html;
+    }
+
+    // Load all students - tries API first, falls back to sample data
+    function fetchAllStudents() {
+        if (useFallback) {
+            renderTable(sampleStudents);
+            return;
+        }
+        fetch(BASE_URL)
+            .then(function(response) { return response.json(); })
+            .then(function(students) { renderTable(students); })
+            .catch(function() {
+                useFallback = true;
+                renderTable(sampleStudents);
+            });
+    }
+
+    // Add a new student record
+    function createStudent() {
+        var nameVal = document.getElementById("stuName").value.trim();
+        var emailVal = document.getElementById("stuEmail").value.trim();
+        var courseVal = document.getElementById("stuCourse").value.trim();
+
+        if (!nameVal || !emailVal || !courseVal) {
+            alert("Please fill in all fields before adding.");
+            return;
+        }
+
+        var payload = { name: nameVal, email: emailVal, course: courseVal };
+
+        if (useFallback) {
+            payload.id = nextId++;
+            sampleStudents.push(payload);
+            document.getElementById("stuName").value = "";
+            document.getElementById("stuEmail").value = "";
+            document.getElementById("stuCourse").value = "";
+            showToast("Student added successfully", "success");
+            renderTable(sampleStudents);
+            return;
+        }
+
+        fetch(BASE_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        }).then(function() {
+            document.getElementById("stuName").value = "";
+            document.getElementById("stuEmail").value = "";
+            document.getElementById("stuCourse").value = "";
+            showToast("Student added successfully", "success");
+            fetchAllStudents();
+        });
+    }
+
+    // Find a student by ID
+    function findStudentById() {
+        var searchId = parseInt(document.getElementById("searchId").value);
+        var box = document.getElementById("searchResult");
+
+        if (!searchId || searchId < 1) {
+            box.className = "result-box error-box";
+            box.style.display = "block";
+            box.innerHTML = "<p>Please enter a valid student ID.</p>";
+            return;
+        }
+
+        if (useFallback) {
+            var found = null;
+            for (var i = 0; i < sampleStudents.length; i++) {
+                if (sampleStudents[i].id === searchId) { found = sampleStudents[i]; break; }
+            }
+            if (found) {
+                box.className = "result-box";
+                box.style.display = "block";
+                box.innerHTML =
+                    '<p><span class="label">ID:</span> ' + found.id + '</p>' +
+                    '<p><span class="label">Name:</span> ' + found.name + '</p>' +
+                    '<p><span class="label">Email:</span> ' + found.email + '</p>' +
+                    '<p><span class="label">Course:</span> ' + found.course + '</p>';
+            } else {
+                box.className = "result-box error-box";
+                box.style.display = "block";
+                box.innerHTML = "<p>No student found with ID " + searchId + "</p>";
+            }
+            return;
+        }
+
+        fetch(BASE_URL + "/" + searchId)
+            .then(function(response) {
+                if (!response.ok) throw new Error("Not found");
+                return response.json();
+            })
+            .then(function(student) {
+                box.className = "result-box";
+                box.style.display = "block";
+                box.innerHTML =
+                    '<p><span class="label">ID:</span> ' + student.id + '</p>' +
+                    '<p><span class="label">Name:</span> ' + student.name + '</p>' +
+                    '<p><span class="label">Email:</span> ' + student.email + '</p>' +
+                    '<p><span class="label">Course:</span> ' + student.course + '</p>';
+            })
+            .catch(function() {
+                box.className = "result-box error-box";
+                box.style.display = "block";
+                box.innerHTML = "<p>No student found with ID " + searchId + "</p>";
+            });
+    }
+
+    // Remove a student by ID
+    function removeStudent(studentId) {
+        if (!confirm("Are you sure you want to remove this student?")) return;
+
+        if (useFallback) {
+            sampleStudents = sampleStudents.filter(function(s) { return s.id !== studentId; });
+            showToast("Student removed successfully", "deleted");
+            renderTable(sampleStudents);
+            return;
+        }
+
+        fetch(BASE_URL + "/" + studentId, { method: "DELETE" })
+            .then(function() {
+                showToast("Student removed successfully", "deleted");
+                fetchAllStudents();
+            });
+    }
+
+    // Edit a student record
+    function editStudent(studentId) {
+        var newName = prompt("Enter updated name:");
+        if (newName === null) return;
+        var newEmail = prompt("Enter updated email:");
+        if (newEmail === null) return;
+        var newCourse = prompt("Enter updated course:");
+        if (newCourse === null) return;
+
+        var updatedData = { name: newName, email: newEmail, course: newCourse };
+
+        if (useFallback) {
+            for (var i = 0; i < sampleStudents.length; i++) {
+                if (sampleStudents[i].id === studentId) {
+                    sampleStudents[i].name = newName;
+                    sampleStudents[i].email = newEmail;
+                    sampleStudents[i].course = newCourse;
+                    break;
+                }
+            }
+            showToast("Student updated successfully", "success");
+            renderTable(sampleStudents);
+            return;
+        }
+
+        fetch(BASE_URL + "/" + studentId, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updatedData)
+        }).then(function() {
+            showToast("Student updated successfully", "success");
+            fetchAllStudents();
+        });
+    }
+
+    // initial load
+    fetchAllStudents();
+</script>
+
+</body>
+</html>
